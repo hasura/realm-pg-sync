@@ -1,0 +1,44 @@
+.header {
+  background-color: #3F51B5;
+  height: 200px;
+  margin: 0px -15px 15px -15px;
+  text-align: center;
+}
+
+.header h1 {
+  color: #FFF;
+  padding-top: 10%;
+  text-align: center;
+}
+
+.tracked-table-row {
+  display: flex;
+  background-color: #ebebeb;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 5px 0px;
+  height: 40px;
+}
+
+.tracked-tables-container {
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.margin-right {
+  margin-right: 5px;
+}
+
+.margin-bottom {
+  margin-bottom: 10px;
+}
+
+.error {
+  background-color: #ff6666;
+  border-radius: 6px;
+  margin: 5px 25% 10px 25%;
+  height: 50px;
+  color: #FFF;
+  text-align: center;
+  padding-top: 10px;
+}

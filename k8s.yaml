@@ -1,0 +1,90 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: api
+      hasuraService: custom
+    name: api
+    namespace: '{{ cluster.metadata.namespaces.user }}'
+  spec:
+    replicas: 1
+    strategy: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: api
+      spec:
+        containers:
+        - image: hasura/hello-world:latest
+          env:
+          - name: PG_USER
+            valueFrom:
+              secretKeyRef:
+                key: postgres.user
+                name: hasura-secrets
+          - name: PG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: postgres.password
+                name: hasura-secrets
+          - name: REALM_USER
+            valueFrom:
+              secretKeyRef:
+                key: realm.user
+                name: hasura-secrets
+          - name: REALM_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: realm.password
+                name: hasura-secrets
+          - name: REALM_URL
+            valueFrom:
+              secretKeyRef:
+                key: realm.url
+                name: hasura-secrets
+          - name: REALM_AUTH_URL
+            valueFrom:
+              secretKeyRef:
+                key: realm.auth.url
+                name: hasura-secrets
+          imagePullPolicy: IfNotPresent
+          name: api
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          volumeMounts:
+          - mountPath: /src/realm-object-server
+            name: ros-data
+          resources: {}
+        volumes:
+        - hostPath:
+            path: /data/ros
+          name: ros-data
+        securityContext: {}
+        terminationGracePeriodSeconds: 0
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: api
+      hasuraService: custom
+    name: api
+    namespace: '{{ cluster.metadata.namespaces.user }}'
+  spec:
+    ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: api
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata: {}
