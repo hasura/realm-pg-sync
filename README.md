@@ -1,6 +1,6 @@
 # REALM-PG-SYNC
 
-This microservice syncs data between Realm and Postgres.
+This microservice syncs data between Realm cloud and Postgres on Hasura (via HasuraDB).
 
 ### SETUP
 
