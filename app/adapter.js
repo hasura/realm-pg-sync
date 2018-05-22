@@ -37,7 +37,7 @@ async function start(schemaModels, shouldResetReplicationSlot) {
       applyRealmSchemaChangesToPostgres: false,
 
       // The regex to match for realm path
-      realmRegex: `/(.*?)/${Config.realm_path}`,
+      realmRegex: `/(.*?)${Config.realm_path}`,
 
       // Specify the RealmPath a Postgres change should be applied to
       mapPostgresChangeToRealmPath: (tableName, props) => {
@@ -45,7 +45,7 @@ async function start(schemaModels, shouldResetReplicationSlot) {
         console.log(`PG CHANGE -> ${tableName}`)
         console.log(`${JSON.stringify(props)}`)
         if (props.realm_id) {
-          return `/${props.realm_id}/${Config.realm_path}`
+          return `/${props.realm_id}${Config.realm_path}`
         }
         return Config.common_realm_path
       },
