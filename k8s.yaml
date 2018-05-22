@@ -5,9 +5,9 @@ items:
   metadata:
     creationTimestamp: null
     labels:
-      app: api
+      app: '{{ microservice.name }}'
       hasuraService: custom
-    name: api
+    name: '{{ microservice.name }}'
     namespace: '{{ cluster.metadata.namespaces.user }}'
   spec:
     replicas: 1
@@ -16,7 +16,7 @@ items:
       metadata:
         creationTimestamp: null
         labels:
-          app: api
+          app: '{{ microservice.name }}'
       spec:
         containers:
         - image: hasura/hello-world:latest
@@ -52,7 +52,7 @@ items:
                 key: realm.auth.url
                 name: hasura-secrets
           imagePullPolicy: IfNotPresent
-          name: api
+          name: '{{ microservice.name }}'
           ports:
           - containerPort: 8080
             protocol: TCP
@@ -72,9 +72,9 @@ items:
   metadata:
     creationTimestamp: null
     labels:
-      app: api
+      app: '{{ microservice.name }}'
       hasuraService: custom
-    name: api
+    name: '{{ microservice.name }}'
     namespace: '{{ cluster.metadata.namespaces.user }}'
   spec:
     ports:
@@ -82,7 +82,7 @@ items:
       protocol: TCP
       targetPort: 8080
     selector:
-      app: api
+      app: '{{ microservice.name }}'
     type: ClusterIP
   status:
     loadBalancer: {}
