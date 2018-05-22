@@ -2,19 +2,25 @@
 
 This microservice syncs data between Realm cloud and Postgres on Hasura (via HasuraDB).
 
-### SETUP
+## Pre-requisites
+
+- A realm cloud instance or a self hosted realm. You can find instructions to set one up [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-REALM-README.md)
+- A hasura project running on a Hasura cluster. You can fine instructions to set one up [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-HASURA-README.md)
+
+
+## Setup
 
 - This microservice relies on a table called `tracked_tables` to keep track of the tables that need to be synced between Postgres and Realm.
 
-  - Head to the API console
-  - Create a new table called `tracked_tables`
+  - Head to your Hasura API console. (Instructions [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-HASURA-README.md#api-console))
+  - Create a new table called `tracked_tables`(Instructions [here](https://docs.hasura.io/0.15/manual/api-console/data.html))
   - Add one column `name` (make this the primary key)
   - Click `Save`
 
 - Add the following secrets to your hasura cluster
   - `realm.url`: The base realm url. For eg: `realms://test1234567.us1.cloud.realm.io` (no `/` at the end)
   - `realm.auth.url`: The auth url for the realm. For eg: `https://test1234567.us1.cloud.realm.io` (no `/` at the end)
-  - `realm.user`: Username of the admin user (Create a new user using Realm studio and give it an administrator role).
+  - `realm.user`: Username of the admin user (Create a new user using Realm studio and give it an administrator role. You can find instructions to do this [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-REALM-README.md#creating-an-admin-user-on-your-realm-server)).
   - `realm.password`: Password of the admin user.
 
   You can add secrets to your cluster by running the following command inside your hasura project directory
@@ -42,7 +48,7 @@ This microservice syncs data between Realm cloud and Postgres on Hasura (via Has
   $ git push hasura master
 ```
 
-### UI
+## UI
 
 This microservice also comes with a simple UI that runs on your web browser, you can use the UI to sync new tables and also hard reset the service.
 
@@ -52,7 +58,9 @@ To open the UI
 $ hasura microservice open sync
 ```
 
-### Logs
+![UI](https://raw.githubusercontent.com/hasura/realm-pg-sync/master/readme-assets/ui.png)
+
+## Logs
 
 To view logs
 
@@ -60,13 +68,13 @@ To view logs
 $ hasura microservice logs sync -f
 ```
 
-### Architecture
+## Architecture
 
 This service assumes that you will ultimately have two major types of tables.
 - Tables that store public or common data.
 - Tables that store private data for each user.
 
-#### Private Data
+### Private Data
 
 Multiple realm users will have private data that they keep storing in Realm. This private data should be stored at `/~/tables` in the realm object server.
 
@@ -80,13 +88,15 @@ In summary,
 - Everytime new data is inserted into any of the tables, ensure that you provide the `realm_id` of the user as well.
 - A table is identified to be storing private data if it consists of a `realm_id` column.
 
-#### Public/Common Data
+### Public/Common Data
 
 All tables with public data (tables which do not have a `realm_id` column) are stored at `/common` in the realm object server.
 
 All users (non admin) are only given read access to this realm. Therefore any change to the tables inside of `/common` must be made from Postgres.
 
-#### Explanation with an example
+### Explanation with an example
+
+![Architecture](https://raw.githubusercontent.com/hasura/realm-pg-sync/master/readme-assets/architecture.png)
 
 The best way to understand this architecture would be through a real world example. Let's assume a simple scenario of an e-commerce application. Here are the features we want:
 - Show the users a list of products (name, price and image).
@@ -108,8 +118,8 @@ On your client application, you would connect to two realms
 
 You would fetch and listen to updates on the `Products` table using realm1. Each user can then choose a product from this listing and place an order. You can then enter this order into the `PastOrders` table using realm2.
 
-### Adding authentication
-You can leverage Hasura's authentication system to restrict access to the service to users with certain roles.
+## Adding authentication
+You can leverage Hasura's [authentication system](https://docs.hasura.io/0.15/manual/auth/index.html) to restrict access to the service to users with certain roles.
 
 Here is an example of how you can restrict access to the UI to users with `admin` roles.
 
@@ -135,7 +145,7 @@ Here is an example of how you can restrict access to the UI to users with `admin
 An anonymous user is redirected to an authentication page where they can sign in. You can access the authentication page directly by opening `https://auth.<cluster-name>.hasura-app.io/ui` (replace <cluster-name> with the name of your cluster) in your browser.
 
 
-### Edge cases
+## Edge cases
 
 - **Handling schema changes for a particular table**
 
@@ -144,6 +154,3 @@ An anonymous user is redirected to an authentication page where they can sign in
 - **Syncing a table with pre-existing data**
 
   Syncing a table with pre-existing data will only sync data that is inserted AFTER the table is added to the tracked table list. To ensure that all data is synced, hit the `Hard reset` button on the UI.
-
-### Issues/Bugs & Status
-<Fillup>
