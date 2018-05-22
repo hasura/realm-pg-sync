@@ -8,6 +8,15 @@ var adapter = null
 
 async function start(schemaModels, shouldResetReplicationSlot) {
   var admin_user = await Realm.Sync.User.login(Config.auth_server_url, Config.admin_username, Config.admin_password)
+  //Grant permission to common_realm_path
+  admin_user.applyPermissions('*', Config.common_realm_path, 'read').then(permissionChange => {
+   console.log('Granted permission')
+   console.log(permissionChange)
+  })
+  .catch(error => {
+   console.log('Error granting permission')
+   console.log(error)
+  });
   process.on('uncaughtException', (err) => {
     console.log('uncaughtException')
     console.log(err)
