@@ -46,7 +46,7 @@ This microservice syncs data between Realm cloud and Postgres on Hasura (via Has
   $ git add . && git commit -m "Added sync microservice and migration(tracked_tables)"
   # Assuming your remote is called hasura
   $ git push hasura master
-```
+  ```
 
 ## UI
 
