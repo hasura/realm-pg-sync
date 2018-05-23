@@ -2,6 +2,8 @@
 
 This microservice syncs data between Realm cloud and Postgres on Hasura (via HasuraDB).
 
+[Demo](https://youtu.be/Xa3fHV6h2HA)
+
 ## Pre-requisites
 
 - A realm cloud instance or a self hosted realm. You can find instructions to set one up [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-REALM-README.md)
