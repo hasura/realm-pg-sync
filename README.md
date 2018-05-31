@@ -12,6 +12,31 @@ This microservice syncs data between Realm cloud and Postgres on Hasura (via Has
 
 ## Setup
 
+- Enable logical replication on Postgres
+
+  - Run the following inside the project directory
+
+  ```bash
+  $ hasura microservice exec postgres -n hasura -- /bin/bash
+  ```
+  - Open `var/lib/postgresql/data/postgresql.conf ` and make the following changes to the respective keys
+
+  ```
+  wal_level = logical
+​
+  max_wal_senders = 8
+​
+  wal_keep_segments = 4
+  max_replication_slots = 4
+
+  port = 5432
+  ```
+  - Restart the postgres service
+
+  ```bash
+  $ hasura microservice restart postgres -n hasura
+  ```
+
 - This microservice relies on a table called `tracked_tables` to keep track of the tables that need to be synced between Postgres and Realm.
 
   - Head to your Hasura API console. (Instructions [here](https://github.com/hasura/realm-pg-sync/blob/master/SETUP-HASURA-README.md#api-console))
